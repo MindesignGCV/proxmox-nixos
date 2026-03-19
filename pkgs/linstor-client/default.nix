@@ -8,15 +8,22 @@
 
 python310.pkgs.buildPythonApplication rec {
   pname = "linstor-client";
-  version = "1.26.1";
+  version = "1.27.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "LINBIT";
     repo = "linstor-client";
     rev = "v${version}";
-    hash = "sha256-QEP3YLmBwvNvUcU/OLPgkb2O9tguOngYVj0HRhIGd0A=";
+    hash = "sha256-k/b/5fwwP+3wsnlFvDmACdmEokFTQjoTLjzO8zojhp8=";
   };
+
+  # Upstream uses distro package names in install_requires (e.g. python3-setuptools)
+  # instead of PyPI names (e.g. setuptools), since they distribute via Debian/RPM.
+  postPatch = ''
+    substituteInPlace setup.py \
+      --replace-fail '"python3-setuptools"' '"setuptools",'
+  '';
 
   nativeBuildInputs = [
     python310.pkgs.setuptools
